@@ -1,7 +1,8 @@
 import argparse
-import struct
 import sys
-from socket import create_connection
+import traceback
+
+from connection import Connection
 
 ###########################################################
 ####################### YOUR CODE #########################
@@ -12,10 +13,8 @@ def send_data(server_ip, server_port, data):
     """
     Send data to server in address (server_ip, server_port).
     """
-    connection = create_connection((server_ip, server_port))
-    encoded_data = data.encode()
-    header = struct.pack(">I", len(encoded_data))
-    connection.send(header + encoded_data)
+    with Connection.connect(server_ip, server_port) as connection:
+        connection.send_message(data.encode())
 
 
 ###########################################################
@@ -41,6 +40,7 @@ def main():
         print("Done.")
     except Exception as error:
         print(f"ERROR: {error}")
+        traceback.print_exc()
         return 1
 
 
