@@ -22,7 +22,8 @@ def recv_data(serv):
         message_length = struct.unpack(">I", header.encode())[0]
         while len(message) < message_length:
             data = conn.recv(message_length - len(message))
-            message += data.decode()
+            message += data
+        message = message.decode()
         conn.close()
         print(f"Recieved data: {message}")
     except Exception as error:
