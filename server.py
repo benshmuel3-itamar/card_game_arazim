@@ -28,7 +28,6 @@ def recv_data(conn):
         print(f"Recieved data: {message}")
     except Exception as error:
         print(f"ERROR: {error}")
-        return
 
 
 def make_socket(args):
