@@ -15,7 +15,7 @@ def recv_data(conn):
     recieves data from one client. the data comes with a header (it's length)
     """
     try:
-        message = ""
+        message = b""
         header = ""
         while len(header) < 4:
             data = conn.recv(1)
@@ -23,7 +23,8 @@ def recv_data(conn):
         message_length = struct.unpack(">I", header.encode())[0]
         while len(message) < message_length:
             data = conn.recv(message_length - len(message))
-            message += data.decode()
+            message += data
+        message = message.decode()
         conn.close()
         print(f"Recieved data: {message}")
     except Exception as error:
