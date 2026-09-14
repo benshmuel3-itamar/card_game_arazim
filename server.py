@@ -9,7 +9,7 @@ import struct
 
 def recv_data(serv):
     '''
-    Send data to server in address (server_ip, server_port).
+    recieves data from one client. the data comes with a header (it's length)
     '''
     try:
         conn, _ = serv.accept()
@@ -28,6 +28,7 @@ def recv_data(serv):
         print(f'ERROR: {error}')
         return
 def make_socket(args):
+    """creates a new docket' listening on the specified port"""
     serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serv.bind((args.server_ip, args.server_port))
     serv.listen(5)
@@ -42,7 +43,7 @@ def get_args():
 
 def main():
     '''
-    Implementation of CLI and sending data to server.
+    Implementation of CLI and recieving data.
     '''
     args = get_args()
     try:
