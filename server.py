@@ -38,9 +38,7 @@ def main():
         with Listener(args.server_port, args.server_ip) as listener:
             while True:
                 with listener.accept() as connection:
-                    print(connection)
-                    t = threading.Thread(target=recv_data, args=(connection,))
-                    t.start()
+                    recv_data(connection)
     except Exception as error:
         print(f"ERROR: {error}")
         traceback.print_exc()
