@@ -2,18 +2,19 @@ import argparse
 import socket
 import struct
 import sys
+import threading
 
 ###########################################################
 ####################### YOUR CODE #########################
 ###########################################################
+BACKLOG = 100
 
 
-def recv_data(serv):
+def recv_data(conn):
     """
     recieves data from one client. the data comes with a header (it's length)
     """
     try:
-        conn, _ = serv.accept()
         message = ""
         header = ""
         while len(header) < 4:
@@ -34,7 +35,7 @@ def make_socket(args):
     """creates a new docket' listening on the specified port"""
     serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serv.bind((args.server_ip, args.server_port))
-    serv.listen(5)
+    serv.listen(BACKLOG)
     return serv
 
 
@@ -53,7 +54,9 @@ def main():
     try:
         serv = make_socket(args)
         while True:
-            recv_data(serv)
+            conn, _ = serv.accept()
+            t = threading.Thread(target=recv_data, args=(conn,))
+            t.start()
     except Exception as error:
         print(f"ERROR: {error}")
         return 1
