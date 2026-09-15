@@ -2,6 +2,9 @@ import argparse
 import sys
 import traceback
 
+from PIL import Image
+
+from card import Card
 from connection import Connection
 
 ###########################################################
@@ -9,12 +12,12 @@ from connection import Connection
 ###########################################################
 
 
-def send_data(server_ip: str, server_port: int, data: str) -> None:
+def send_data(server_ip: str, server_port: int, data: bytes) -> None:
     """
     Send data to server in address (server_ip, server_port).
     """
     with Connection.connect(server_ip, server_port) as connection:
-        connection.send_message(data.encode())
+        connection.send_message(data)
 
 
 ###########################################################
@@ -26,7 +29,11 @@ def get_args():
     parser = argparse.ArgumentParser(description="Send data to server.")
     parser.add_argument("server_ip", type=str, help="the server's ip")
     parser.add_argument("server_port", type=int, help="the server's port")
-    parser.add_argument("data", type=str, help="the data")
+    parser.add_argument("name", type=str, help="the data")
+    parser.add_argument("creator", type=str, help="the data")
+    parser.add_argument("riddle", type=str, help="the data")
+    parser.add_argument("solution", type=str, help="the data")
+    parser.add_argument("path", type=str, help="the data")
     return parser.parse_args()
 
 
@@ -36,7 +43,13 @@ def main():
     """
     args = get_args()
     try:
-        send_data(args.server_ip, args.server_port, args.data)
+        card = Card.create_from_path(
+            args.name, args.creator, args.riddle, args.solution, args.path
+        )
+        card.image.encrypt(card.solution)
+        data = card.serialize()
+        print(f"sending card '{card.name}' by {card.creator}...")
+        send_data(args.server_ip, args.server_port, data)
         print("Done.")
     except Exception as error:
         print(f"ERROR: {error}")
