@@ -1,11 +1,11 @@
 import argparse
-import socket
-import struct
 import sys
 import threading
-from listener import Listener
-from connection import Connection
 import traceback
+
+from card import Card
+from connection import Connection
+from listener import Listener
 
 ###########################################################
 ####################### YOUR CODE #########################
@@ -19,8 +19,10 @@ def recv_data(connection: Connection):
     """
     with connection:
         my_message = connection.receive_message()
-        print(my_message)
-        return my_message
+        my_card = Card.deserialize(my_message)
+        print(f"Received card '{my_card.name}' by {my_card.creator}")
+        my_card.image.image.show()
+        return my_card
 
 
 def get_args():

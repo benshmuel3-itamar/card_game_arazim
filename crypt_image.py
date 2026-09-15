@@ -12,7 +12,7 @@ class CryptImage:
 
     @classmethod
     def create_from_path(cls, path: str | PathLike):
-        return CryptImage(Image.open(path, mode="RGB"), None)
+        return CryptImage(Image.open(path).convert("RGB"), None)
 
     def _hash(self, val: bytes):
         return hashlib.sha256(hashlib.sha256(val).digest()).digest()
