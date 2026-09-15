@@ -8,19 +8,20 @@ class Listener:
         self.host = host
         self.backlog = backlog
         self._serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._serv.bind((host, port))
 
     def __repr__(self):
         return f"Listener(port={self.port}, host={self.host}, backlog={self.backlog}"
 
     def start(self):
+        self._serv.bind((self.host, self.port))
         self._serv.listen(self.backlog)
 
     def stop(self):
         self._serv.close()
 
     def accept(self):
-        connection = Connection(self._serv)
+        my_socket, _ = self._serv.accept()
+        connection = Connection(my_socket)
         return connection
 
     def __enter__(self):
