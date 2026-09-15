@@ -17,9 +17,10 @@ def recv_data(connection: Connection):
     """
     recieves data from one client. the data comes with a header (it's length)
     """
-    my_message = connection.receive_message()
-    print(my_message)
-    return my_message
+    with connection:
+        my_message = connection.receive_message()
+        print(my_message)
+        return my_message
 
 
 def get_args():
@@ -37,8 +38,9 @@ def main():
     try:
         with Listener(args.server_port, args.server_ip) as listener:
             while True:
-                with listener.accept() as connection:
-                    recv_data(connection)
+                connection = listener.accept()
+                t = threading.Thread(target=recv_data, args=(connection,))
+                t.start()
     except Exception as error:
         print(f"ERROR: {error}")
         traceback.print_exc()

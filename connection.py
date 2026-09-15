@@ -22,7 +22,7 @@ class Connection:
             message = b""
             header = ""
             while len(header) < 4:
-                data = self._connection.recv(1)
+                data = self._connection.recv(4 - len(header))
                 header += data.decode()
             message_length = struct.unpack("<I", header.encode())[0]
             while len(message) < message_length:
